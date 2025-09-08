@@ -1,25 +1,19 @@
 import 'package:dio/dio.dart';
-import '../models/user_response.dart';
+import '../model/user_response.dart';
 
 class ApiService {
-  final Dio _dio = Dio();
-  final String baseUrl = 'https://your-api.com'; // Replace with your API
+  final Dio dio = Dio(BaseOptions(baseUrl: "https://reqres.in/api"));
 
-  Future<UserResponse> getUsers() async {
-    try {
-      final response = await _dio.get('$baseUrl/users');
-      return UserResponse.fromJson(response.data);
-    } catch (e) {
-      throw Exception('Failed to load users: $e');
-    }
-  }
+  Future<UserResponse> fetchUsers({int page = 1}) async {
+    final response = await dio.get('/users', queryParameters: {"page": page});
 
-  Future<UserResponse> addUser(Map<String, dynamic> userData) async {
-    try {
-      final response = await _dio.post('$baseUrl/users', data: userData);
+    // Debugging ke liye response print karo
+    print("API Response: ${response.data}");
+
+    if (response.statusCode == 200) {
       return UserResponse.fromJson(response.data);
-    } catch (e) {
-      throw Exception('Failed to add user: $e');
+    } else {
+      throw Exception("Failed to load users");
     }
   }
 }
