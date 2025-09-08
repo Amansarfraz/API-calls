@@ -4,7 +4,7 @@ import '../model/user_response.dart';
 class ApiService {
   final Dio dio = Dio(
     BaseOptions(
-      baseUrl: "https://reqres.in/api",
+      baseUrl: "https://reqres.in/api/users?page=1",
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
     ),

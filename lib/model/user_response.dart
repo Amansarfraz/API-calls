@@ -6,16 +6,18 @@ part 'user_response.g.dart';
 @JsonSerializable()
 class UserResponse {
   final int page;
-  final int per_page;
+  @JsonKey(name: 'per_page')
+  final int perPage;
   final int total;
-  final int total_pages;
+  @JsonKey(name: 'total_pages')
+  final int totalPages;
   final List<User> data;
 
   UserResponse({
     required this.page,
-    required this.per_page,
+    required this.perPage,
     required this.total,
-    required this.total_pages,
+    required this.totalPages,
     required this.data,
   });
 
