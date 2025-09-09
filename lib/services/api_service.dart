@@ -6,7 +6,7 @@ class ApiService {
   Future<List<dynamic>> fetchFinanceData() async {
     try {
       final response = await _dio.get(
-        'https://jsonplaceholder.typicode.com/posts',
+        'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=EUR&apikey=YOUR_KEY',
       );
 
       if (response.statusCode == 200) {
