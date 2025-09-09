@@ -1,19 +1,29 @@
 import 'package:dio/dio.dart';
-import '../model/user_response.dart';
+import '../model/finance.dart';
 
 class ApiService {
-  final Dio dio = Dio(BaseOptions(baseUrl: "https://reqres.in/api"));
+  final Dio _dio = Dio();
 
-  Future<UserResponse> fetchUsers({int page = 1}) async {
-    final response = await dio.get('/users', queryParameters: {"page": page});
+  Future<List<Finance>> fetchFinanceData() async {
+    try {
+      final response = await _dio.get(
+        'https://api.coindesk.com/v1/bpi/currentprice.json',
+      );
 
-    // Debugging ke liye response print karo
-    print("API Response: ${response.data}");
+      if (response.statusCode == 200) {
+        final data = response.data['bpi'] as Map<String, dynamic>;
+        List<Finance> financeList = [];
 
-    if (response.statusCode == 200) {
-      return UserResponse.fromJson(response.data);
-    } else {
-      throw Exception("Failed to load users");
+        data.forEach((key, value) {
+          financeList.add(Finance.fromJson(value));
+        });
+
+        return financeList;
+      } else {
+        throw Exception("Failed to load data: ${response.statusCode}");
+      }
+    } catch (e) {
+      throw Exception("Error fetching data: $e");
     }
   }
 }
