@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/user.dart';
+import '../model/user.dart';
+import '../model/user_response.dart';
 import '../services/api_service.dart';
 
 class UserListScreen extends StatefulWidget {
@@ -11,7 +12,7 @@ class UserListScreen extends StatefulWidget {
 
 class _UserListScreenState extends State<UserListScreen> {
   final ApiService _apiService = ApiService();
-  List<User> _users = [];
+  final List<User> _users = [];
   bool _isLoading = false;
 
   @override
@@ -23,14 +24,18 @@ class _UserListScreenState extends State<UserListScreen> {
   Future<void> _fetchUsers() async {
     setState(() => _isLoading = true);
     try {
-      final response = await _apiService.fetchUsers(10);
+      // ✅ ApiService already returns UserResponse
+      final UserResponse userResponse = await _apiService.fetchUsers(10);
+
       setState(() {
-        _users.addAll(response.results ?? []);
+        _users.addAll(userResponse.results ?? []); // ✅ safe null handling
       });
     } catch (e) {
-      debugPrint("Error: $e");
+      debugPrint("❌ Error fetching users: $e");
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -49,13 +54,14 @@ class _UserListScreenState extends State<UserListScreen> {
                   return ListTile(
                     leading: CircleAvatar(
                       backgroundImage: NetworkImage(
-                        user.picture?.thumbnail ?? "",
+                        user.picture?.thumbnail ??
+                            "https://via.placeholder.com/150", // ✅ fallback
                       ),
                     ),
                     title: Text(
                       "${user.name?.first ?? ''} ${user.name?.last ?? ''}",
                     ),
-                    subtitle: Text(user.email ?? ""),
+                    subtitle: Text(user.email ?? "No email"),
                   );
                 },
               ),
