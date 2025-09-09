@@ -1,15 +1,17 @@
-class Finance {
-  final String code;
-  final String rate;
-  final String description;
+import 'package:json_annotation/json_annotation.dart';
 
-  Finance({required this.code, required this.rate, required this.description});
+part 'finance.g.dart';
 
-  factory Finance.fromJson(Map<String, dynamic> json) {
-    return Finance(
-      code: json['code'],
-      rate: json['rate'],
-      description: json['description'],
-    );
-  }
+@JsonSerializable()
+class ExchangeRates {
+  final String base;
+  final String date;
+  final Map<String, dynamic> rates;
+
+  ExchangeRates({required this.base, required this.date, required this.rates});
+
+  factory ExchangeRates.fromJson(Map<String, dynamic> json) =>
+      _$ExchangeRatesFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ExchangeRatesToJson(this);
 }
