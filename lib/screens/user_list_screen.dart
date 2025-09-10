@@ -57,11 +57,24 @@ class _UserListScreenState extends State<UserListScreen> {
 
                   return ListTile(
                     leading: CircleAvatar(
-                      backgroundImage: NetworkImage(imageUrl),
-                      onBackgroundImageError: (_, __) {},
-                      child: user.picture == null
-                          ? const Icon(Icons.person, color: Colors.white)
-                          : null,
+                      radius: 25,
+                      backgroundColor: Colors.grey[300],
+                      child: ClipOval(
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          width: 50,
+                          height: 50,
+                          errorBuilder: (context, error, stackTrace) {
+                            // Agar image load na ho to icon show hoga
+                            return const Icon(
+                              Icons.person,
+                              size: 30,
+                              color: Colors.grey,
+                            );
+                          },
+                        ),
+                      ),
                     ),
                     title: Text(
                       "${user.name?.first ?? ''} ${user.name?.last ?? ''}",
