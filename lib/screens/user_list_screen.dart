@@ -38,6 +38,11 @@ class _UserListScreenState extends State<UserListScreen> {
     }
   }
 
+  /// ✅ Proxy helper (sirf Chrome ke liye)
+  String _proxyImage(String url) {
+    return "https://cors-anywhere.herokuapp.com/$url";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,11 +55,13 @@ class _UserListScreenState extends State<UserListScreen> {
                 itemCount: _users.length,
                 itemBuilder: (context, index) {
                   final user = _users[index];
-                  final imageUrl =
+                  final rawImageUrl =
                       user.picture?.large ??
                       user.picture?.medium ??
                       user.picture?.thumbnail ??
                       "https://via.placeholder.com/150";
+
+                  final imageUrl = _proxyImage(rawImageUrl);
 
                   return ListTile(
                     leading: CircleAvatar(
@@ -67,7 +74,6 @@ class _UserListScreenState extends State<UserListScreen> {
                           width: 50,
                           height: 50,
                           errorBuilder: (context, error, stackTrace) {
-                            // ✅ Fallback agar image block ho jaye
                             return const Icon(
                               Icons.person,
                               size: 30,
