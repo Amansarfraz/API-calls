@@ -6,11 +6,12 @@ class ApiService {
 
   Future<UserResponse> fetchUsers(int count) async {
     try {
-      final response = await _dio.get(
-        "https://randomuser.me/api/?results=$count",
-      );
+      // ✅ Use proxy for Chrome (CORS issue bypass)
+      const String url =
+          "https://cors-anywhere.herokuapp.com/https://randomuser.me/api/?results=";
 
-      // response.data is Map<String, dynamic>
+      final response = await _dio.get("$url$count");
+
       return UserResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       throw Exception("Failed to load users: $e");

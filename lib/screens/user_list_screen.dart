@@ -26,6 +26,7 @@ class _UserListScreenState extends State<UserListScreen> {
     try {
       final UserResponse userResponse = await _apiService.fetchUsers(10);
       setState(() {
+        _users.clear();
         _users.addAll(userResponse.results ?? []);
       });
     } catch (e) {
@@ -66,7 +67,7 @@ class _UserListScreenState extends State<UserListScreen> {
                           width: 50,
                           height: 50,
                           errorBuilder: (context, error, stackTrace) {
-                            // Agar image load na ho to icon show hoga
+                            // ✅ Fallback agar image block ho jaye
                             return const Icon(
                               Icons.person,
                               size: 30,
