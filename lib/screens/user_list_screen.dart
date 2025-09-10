@@ -24,11 +24,9 @@ class _UserListScreenState extends State<UserListScreen> {
   Future<void> _fetchUsers() async {
     setState(() => _isLoading = true);
     try {
-      // ✅ ApiService already returns UserResponse
       final UserResponse userResponse = await _apiService.fetchUsers(10);
-
       setState(() {
-        _users.addAll(userResponse.results ?? []); // ✅ safe null handling
+        _users.addAll(userResponse.results ?? []);
       });
     } catch (e) {
       debugPrint("❌ Error fetching users: $e");
@@ -51,12 +49,19 @@ class _UserListScreenState extends State<UserListScreen> {
                 itemCount: _users.length,
                 itemBuilder: (context, index) {
                   final user = _users[index];
+                  final imageUrl =
+                      user.picture?.large ??
+                      user.picture?.medium ??
+                      user.picture?.thumbnail ??
+                      "https://via.placeholder.com/150";
+
                   return ListTile(
                     leading: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        user.picture?.thumbnail ??
-                            "https://via.placeholder.com/150", // ✅ fallback
-                      ),
+                      backgroundImage: NetworkImage(imageUrl),
+                      onBackgroundImageError: (_, __) {},
+                      child: user.picture == null
+                          ? const Icon(Icons.person, color: Colors.white)
+                          : null,
                     ),
                     title: Text(
                       "${user.name?.first ?? ''} ${user.name?.last ?? ''}",
